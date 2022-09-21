@@ -48,22 +48,22 @@ import pymysql
 server_db_local_config_mysql_1 = {
     "server_db_ip" : '127.0.0.1',
     "server_db_port" : 3306, #3306 is defaul port value of mysql
-    "server_db_user" : 'root',
+    "server_db_user" : 'jose',
     "server_db_password" : '',
     "server_db_name" : 'crud1',
     "server_db_system" : 'mysql'
     }
-server_db_local_config_mysql_2 = {
-    "server_db_ip" : '127.0.0.1',
-    "server_db_port" : 3306, #3306 is defaul port value of mysql
-    "server_db_user" : 'root',
-    "server_db_password" : '',
-    "server_db_name" : 'crud_python2',
-    "server_db_system" : 'mysql'
-    }
+# server_db_local_config_mysql_2 = {
+#     "server_db_ip" : '127.0.0.1',
+#     "server_db_port" : 3306, #3306 is defaul port value of mysql
+#     "server_db_user" : 'root',
+#     "server_db_password" : '',
+#     "server_db_name" : 'crud_python2',
+#     "server_db_system" : 'mysql'
+#     }
 
-# tunnel = tunnel_ssh()
-# port_ssh_tunnel = tunnel.start()
+# tunnel = tunnel_ssh() #Use this line if gona use tunnel ssh
+# port_ssh_tunnel = tunnel.start() #Use this line if gona use tunnel ssh
 server_db_remote_ssh_tunnel_config_mysql_1 = {
     "server_db_ip" : '127.0.0.1',
     "server_db_port" : port_ssh_tunnel, #3306 is defaul port value of mysql local/ 5522 is port of namecheap / with tunnel ssh is server.local_bind_port
@@ -128,7 +128,6 @@ class database():
         self.status_conn = False
     
     def connect_db(self, create_db_value = 0):
-        #global puerto
         if (self.__server_db_system == "sqlite3"):
             try:           
                 self.__miConexion=sqlite3.connect(self.__server_db_name)
@@ -136,14 +135,9 @@ class database():
                 return (True, "Database '" + self.__server_db_name + "' was open sucessfully. ")
             except:
                 return (False, "Error conecting tu database '" + self.__server_db_name + "'")
-
         elif (self.__server_db_system == "mysql"):
-            try:
-                #print("conectando por aqui", 'host=',self.__server_db_ip, 'port=',self.__server_db_port, 'user=',self.__server_db_user, 'passwd=',self.__server_db_password)
-                
+            try:                
                 self.__miConexion = pymysql.connect(host=self.__server_db_ip, port=self.__server_db_port, user=self.__server_db_user, passwd=self.__server_db_password)
-                #self.__miConexion = pymysql.connect(host=self.__server_db_ip, port=puerto, user=self.__server_db_user, passwd=self.__server_db_password)
-                
                 sql = "SHOW DATABASES LIKE '" + self.__server_db_name + "'"
                 self.__cur = self.__miConexion.cursor()
                 self.__cur.execute(sql)
@@ -158,14 +152,13 @@ class database():
                     self.__cur = self.__miConexion.cursor()
                     #print("connect")
                     return (True, "Database '" + self.__server_db_name + "' was open sucessfully. ")
-                
                 elif (self.__server_db_name,) in result and create_db_value == 1: #Catches when is trying creating database that already exist
                     self.close_db()
                     return (False, "Database '" + self.__server_db_name + "' already exist. ")
                 elif (self.__server_db_name,) not in result and create_db_value == 1: #Catches when is trying create a new database and name is available
                         return (True, "Database '" + self.__server_db_name + "' is able to create. ")    
             except:
-               return (False, "Error conecting tu database '" + self.__server_db_name + "'")
+                return (False, "Error conecting tu database '" + self.__server_db_name + "'")
         else:
             return (False, "System DB name wrong or is missing. '" + self.__server_db_system + "'")
 
@@ -217,7 +210,6 @@ class database():
                 open_db = open(self.__server_db_name)
                 if open_db:
                     msg = "Database '" + self.__server_db_name + "' already exists. "
-                    #connect = self.connect_db()
             except:
                 connect = self.connect_db()
                 msg = "The database '"+ self.__server_db_name +"' was created suscessfully. "
@@ -227,11 +219,9 @@ class database():
     def create_table(self,sql_create_table):
         table_name = sql_create_table[1]
         try:
-            
             if self.__server_db_system == 'sqlite3':
-               database_file = open(self.__server_db_name)
-               database_file.close()
-
+                database_file = open(self.__server_db_name)
+                database_file.close()
         except:
             return ("Error creating table '" + table_name + "'. database do not exist", self.__server_db_name,self.__server_db_system)
         try:
@@ -251,26 +241,22 @@ class database():
             else:
                 return ("Error creating table '" + table_name + "'. " , connect[1],self.__server_db_system)
         except:
-           return ("Error creating table '" + table_name + "' ", sql_create_table, self.__server_db_system,self.__server_db_name)
+            return ("Error creating table '" + table_name + "' ", sql_create_table, self.__server_db_system,self.__server_db_name)
         finally:
-           self.close_db()
+            self.close_db()
 
     #BEGIN SELECT*************************************************
     def select_from_table(self,table_name, sql_statement):
         try:
             table_name=str(table_name)
-        
             if ((type(sql_statement)==dict) and (sql_statement!="") and (table_name!="")):
                 sql = "SELECT * FROM " + table_name + " WHERE " + ' and '.join('{} = {}'.format(key, value) for key, value in sql_statement.items())
             elif((type(sql_statement)==str) and (sql_statement!="") and (table_name!="")):
                 sql = sql_statement
             else:
                 return ("error","1 or more args are missing or incomplete", self.__server_db_system,self.__server_db_name)
-            
             connect = self.connect_db()
             if connect:
-                
-                #print(sql)
                 try:
                     self.__cur.execute(sql)
                 except:
@@ -293,14 +279,12 @@ class database():
     #BEGIN DELETE*************************************************
     def delete_from_table(self,table_name, sql_statement):
         table_name=str(table_name)
-        
         if ((type(sql_statement)==dict) and (sql_statement!="") and (table_name!="")):
             sql = "SELECT * FROM " + table_name + " WHERE " + ' and '.join('{} = {}'.format(key, value) for key, value in sql_statement.items())
         elif((type(sql_statement)==str) and (sql_statement!="") and (table_name!="")):
             sql = sql_statement
         else:
             return ("error","1 or more args are missing or incomplete", self.__server_db_system,self.__server_db_name)
-        
         if ((table_name!="") and (type(sql_statement==dict)) and (sql_statement!="")):
             connect = self.connect_db()
             if connect:
@@ -332,7 +316,6 @@ class database():
     def insert_row_table(self,table_name,table_data):
         #arg active = values that are partially errased from system and is optional, values 0 or 1)
         msg = ""
-        
         table_name=str(table_name)
         if ((table_data!="") and (type(table_data==dict))(table_name!="")):
             
@@ -368,7 +351,6 @@ class database():
             sql = sql_statement
         else:
             return ("error","1 or more args are missing or incomplete", self.__server_db_system,self.__server_db_name)
-
         if ((table_data!="") and (type(table_data==dict)) and (table_name!="") and (type(sql_statement==dict)) and (sql_statement!="")):
             connect = self.connect_db()
             if connect:
@@ -392,10 +374,19 @@ class database():
             return ("error","1 or more args are missing or incomplete",self.__server_db_system,self.__server_db_name)
     #END UPDATE*****************************************************************
 
+
+
+
+# TESTING EXAMPLES FOR ALL FUNCTIONS OF SQL
+
+
+
+
+
 #BEGIN SQLITE3 +++++++++++++++++++++++++++++++++++++++++++++++
 
 #db_1 = database(server_db_local_config_sqlite3_1)
-#db_1 = database(server_db_local_config_mysql_1)
+db_1 = database(server_db_local_config_mysql_1)
 
 
 # db_2 = database(server_db_remote_ssh_tunnel_config_mysql_1)
@@ -407,6 +398,8 @@ class database():
 
 #*******************************************************
 # Crear base de datos
+# createdb1 = db_1.create_db()
+# db_1.create_db()
 # createdb1 = db_2.create_db()
 # print(createdb1)
 
@@ -415,6 +408,7 @@ class database():
 #Crear tablas
 #create_table = db_1.create_table(sql_create_table_users_sqlite3)
 # create_table = db_1.create_table(sql_create_table_users_mysql)
+db_1.create_table(sql_create_table_users_mysql)
 #create_table = db_2.create_table(sql_create_table_users_mysql)
 # create_table = db_2.create_table(sql_create_table_users_mysql)
 # print(create_table)
