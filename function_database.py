@@ -79,23 +79,23 @@ server_db_local_config_mysql_1 = {
 
 
 
-tunnel = tunnel_ssh() #Use this line if gona use tunnel ssh
-port_ssh_tunnel = tunnel.start() #Use this line if gona use tunnel ssh
-print ('Port ssh: ' , port_ssh_tunnel)
-server_db_remote_ssh_tunnel_config_mysql_1 = {
-    "server_db_ip" : '127.0.0.1',
-    "server_db_port" : port_ssh_tunnel, #3306 is defaul port value of mysql local/ 5522 is port of namecheap / with tunnel ssh is server.local_bind_port
-    "server_db_user" : domainDbUserName,
-    "server_db_password" : domainDbPassword,
-    "server_db_name" : 'seguxjxs_crud_python_jpinto_1',
-    "server_db_system" : 'mysql',
-    }
+# tunnel = tunnel_ssh() #Use this line if gona use tunnel ssh
+# port_ssh_tunnel = tunnel.start() #Use this line if gona use tunnel ssh
+# print ('Port ssh: ' , port_ssh_tunnel)
+# server_db_remote_ssh_tunnel_config_mysql_1 = {
+#     "server_db_ip" : '127.0.0.1',
+#     "server_db_port" : port_ssh_tunnel, #3306 is defaul port value of mysql local/ 5522 is port of namecheap / with tunnel ssh is server.local_bind_port
+#     "server_db_user" : domainDbUserName,
+#     "server_db_password" : domainDbPassword,
+#     "server_db_name" : 'seguxjxs_crud_python_jpinto_1',
+#     "server_db_system" : 'mysql',
+#     }
 
 
 
 
 # sql sentence to create a table
-sql_create_table_users_mysql =("CREATE TABLE", "usersxhhhx888s", "(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)")
+sql_create_table_users_mysql =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)")
 
 #END CONFIG MYSQL*********************************************<
 
@@ -333,7 +333,6 @@ class database():
         msg = ""
         table_name=str(table_name)
         if ((table_data!="") and (type(table_data==dict))(table_name!="")):
-            
             connect = self.connect_db()
             if connect:
                 verify_table_ex = self.verify_table_exist(table_name)
@@ -400,49 +399,54 @@ class database():
 
 #BEGIN SQLITE3 +++++++++++++++++++++++++++++++++++++++++++++++
 
-# db_1 = database(server_db_local_config_sqlite3_1)
+# db_1 = database(server_db_local_config_sqlite3_1) # local database conection
 
 
-# db_1 = database(server_db_local_config_mysql_1)
+db_2 = database(server_db_local_config_mysql_1) # local database conection
 
 
-db_2 = database(server_db_remote_ssh_tunnel_config_mysql_1)
+# db_3 = database(server_db_remote_ssh_tunnel_config_mysql_1) # remote dababase conection
 
 
 
 #*******************************************************
-# Crear base de datos
+# Create Database
 # createdb1 = db_1.create_db()
-# db_1.create_db()
-# createdb1 = db_2.create_db()
 # print(createdb1)
+
+# createdb2 = db_2.create_db()
+# print(createdb2)
+
 
 #*******************************************************
 
 #Crear tablas
-#create_table = db_1.create_table(sql_create_table_users_sqlite3)
-# create_table = db_1.create_table(sql_create_table_users_mysql)
-# create_table = db_1.create_table(sql_create_table_users_mysql)
+# create_table = db_1.create_table(sql_create_table_users_sqlite3)
+
 create_table = db_2.create_table(sql_create_table_users_mysql)
+
+# create_table = db_3.create_table(sql_create_table_users_mysql)
 
 
 print(create_table)
 
 #*******************************************************
 #Parametros para insertar registros
-
-# tabla_usuarios = "users" #Nombre de la tabla
+tabla_usuarios = "users" #Nombre de la tabla
 
 #Dict que contiene los datos que serán registrados en la tabla. "Nombre de campo" : "Valor" / "field name" : "value"
-""" datos_usuario = {
-    "username" : "'333'",
-    "country" : "'4333344'",
+datos_usuario = {
+    "username" : "'Jose'",
+    "country" : "'Uruguay'",
     "phone" : "'774433347'",
-    "age" : "'7433333477'"
-}  """
+    "age" : "'30'"
+}
 
-# query_insert_1 = db_1.insert_row_table(tabla_usuarios,datos_usuario)
+# query_insert = db_1.insert_row_table(tabla_usuarios,datos_usuario)
 # print(query_insert_1)
+
+# query_insert = db_2.insert_row_table(tabla_usuarios,datos_usuario)
+# print(query_insert)
 
 # for i in range(10):
 #     query_insert_1 = db_2.insert_row_table(tabla_usuarios,datos_usuario)
@@ -458,6 +462,9 @@ print(create_table)
 
 #sql_statement = "SELECT  * FROM users WHERE id BETWEEN 5 AND 10"
 
+sql_statement = {
+    "id" : "2",
+}
 
 # sql_statement = {
 #     "id" : "1",
@@ -472,18 +479,24 @@ print(create_table)
 #      "1":"1"
 # }
 
+
+datos_usuario = {
+    "username" : "'Pedro'",
+}
+# sql_statement = "UPDATE " +  tabla_usuarios + " SET name = Pedro  WHERE id = 2"
+
 #query_select_1 = db_1.select_from_table(tabla_usuarios,sql_statement)
 #print(query_select_1)
 
-# query_select_1 = db_2.select_from_table(tabla_usuarios,sql_statement)
-# print(query_select_1)
+# query_select= db_2.select_from_table(tabla_usuarios,sql_statement)
+# print(query_select)
 
-# query_delete_1 = db_1.delete_from_table(tabla_usuarios,sql_statement)
-# print(query_delete_1)
+# query_delete = db_2.delete_from_table(tabla_usuarios,sql_statement)
+# print(query_delete)
 
 
-# query_update_1 = db_1.update_from_table(tabla_usuarios,sql_statement,datos_usuario)
-# print(query_update_1)
+query_update = db_2.update_from_table(tabla_usuarios,sql_statement,datos_usuario)
+print(query_update)
 
 #END SQLITE3--------------------------------------------------
 
