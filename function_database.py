@@ -1,4 +1,12 @@
 
+
+
+
+domainDbUserName = "username"
+domainDbPassword = "password"
+domainSshUserName = "username"
+domainSshPassword = "password"
+
 #BEGIN TUNNEL SSH
 port_ssh_tunnel=0
 from sshtunnel import SSHTunnelForwarder
@@ -6,8 +14,8 @@ class tunnel_ssh():
     def __init__(self):
         self.__server = SSHTunnelForwarder(
         ('162.0.209.168',21098),
-        ssh_username="seguxjxs",
-        ssh_password="Clarisse2017//**",
+        ssh_username=domainSshUserName,
+        ssh_password=domainSshPassword,
 
         remote_bind_address=('127.0.0.1', 3306)
         ) 
@@ -77,8 +85,8 @@ print ('Port ssh: ' , port_ssh_tunnel)
 server_db_remote_ssh_tunnel_config_mysql_1 = {
     "server_db_ip" : '127.0.0.1',
     "server_db_port" : port_ssh_tunnel, #3306 is defaul port value of mysql local/ 5522 is port of namecheap / with tunnel ssh is server.local_bind_port
-    "server_db_user" : 'seguxjxs',
-    "server_db_password" : 'Clarisse2017//**',
+    "server_db_user" : domainDbUserName,
+    "server_db_password" : domainDbPassword,
     "server_db_name" : 'seguxjxs_crud_python_jpinto_1',
     "server_db_system" : 'mysql',
     }
