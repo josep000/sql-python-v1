@@ -1,14 +1,14 @@
-#FIRST STABLE AND TESTED VERSION. LAST DATE MODIFIED 30 07 2021. JOSE PINTO
-port_ssh_tunnel=0
 
 #BEGIN TUNNEL SSH
+port_ssh_tunnel=0
 from sshtunnel import SSHTunnelForwarder
 class tunnel_ssh():
     def __init__(self):
         self.__server = SSHTunnelForwarder(
         ('162.0.209.168',21098),
         ssh_username="seguxjxs",
-        ssh_password="seguprovieferper2021",
+        ssh_password="Clarisse2017//**",
+
         remote_bind_address=('127.0.0.1', 3306)
         ) 
     def start(self):
@@ -25,6 +25,9 @@ class tunnel_ssh():
         except:
             print("Error stoping tunnel ssh")
 #ENF TUNNEL SSH
+
+
+
 #BEGIN CONFIG SQLITE3*********************************************>
 
 from os import close
@@ -37,9 +40,11 @@ server_db_local_config_sqlite3_1 = {
 
 #sql_create_table_users_sqlite3 ='''CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)'''
 #sql_create_table_users_sqlite3 =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)")
-sql_create_table_products_sqlite3 =("CREATE TABLE", "products", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, productname VARCHAR(30) NOT NULL, price FLOAT NOT NULL)")
+# sql_create_table_products_sqlite3 =("CREATE TABLE", "products", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, productname VARCHAR(30) NOT NULL, price FLOAT NOT NULL)")
 #sql_create_table_products_sqlite3 =("CREATE TABLE", "productos", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)")
+
 #END CONFIG SQLITE3*********************************************<
+
 
 
 #BEGIN CONFIG MYSQL*********************************************>
@@ -53,6 +58,7 @@ server_db_local_config_mysql_1 = {
     "server_db_name" : 'crud1',
     "server_db_system" : 'mysql'
     }
+
 # server_db_local_config_mysql_2 = {
 #     "server_db_ip" : '127.0.0.1',
 #     "server_db_port" : 3306, #3306 is defaul port value of mysql
@@ -62,19 +68,26 @@ server_db_local_config_mysql_1 = {
 #     "server_db_system" : 'mysql'
 #     }
 
-# tunnel = tunnel_ssh() #Use this line if gona use tunnel ssh
-# port_ssh_tunnel = tunnel.start() #Use this line if gona use tunnel ssh
+
+
+
+tunnel = tunnel_ssh() #Use this line if gona use tunnel ssh
+port_ssh_tunnel = tunnel.start() #Use this line if gona use tunnel ssh
+print ('Port ssh: ' , port_ssh_tunnel)
 server_db_remote_ssh_tunnel_config_mysql_1 = {
     "server_db_ip" : '127.0.0.1',
     "server_db_port" : port_ssh_tunnel, #3306 is defaul port value of mysql local/ 5522 is port of namecheap / with tunnel ssh is server.local_bind_port
     "server_db_user" : 'seguxjxs',
-    "server_db_password" : 'seguprovieferper2021',
+    "server_db_password" : 'Clarisse2017//**',
     "server_db_name" : 'seguxjxs_crud_python_jpinto_1',
     "server_db_system" : 'mysql',
     }
-    
 
-sql_create_table_users_mysql =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)")
+
+
+
+# sql sentence to create a table
+sql_create_table_users_mysql =("CREATE TABLE", "usersxhhhx888s", "(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)")
 
 #END CONFIG MYSQL*********************************************<
 
@@ -90,7 +103,7 @@ tabla_usuarios_mysql = "users"
 
 # datos_usuario = {
 #     "username" : "'jose'",
-#     "country" : "'venezuela_again'",
+#     "country" : "'venezuela",
 #     "phone" : "'04143062185'",
 #     "age" : "'44'"
 # }
@@ -132,9 +145,9 @@ class database():
             try:           
                 self.__miConexion=sqlite3.connect(self.__server_db_name)
                 self.__cur=self.__miConexion.cursor()
-                return (True, "Database '" + self.__server_db_name + "' was open sucessfully. ")
-            except:
-                return (False, "Error conecting tu database '" + self.__server_db_name + "'")
+                return (True, "Database '" + self.__server_db_name + "' was sucessfully open. ")
+            except BaseException as err:
+                return (False, "Error conecting to database '" + self.__server_db_name, err)
         elif (self.__server_db_system == "mysql"):
             try:                
                 self.__miConexion = pymysql.connect(host=self.__server_db_ip, port=self.__server_db_port, user=self.__server_db_user, passwd=self.__server_db_password)
@@ -142,38 +155,32 @@ class database():
                 self.__cur = self.__miConexion.cursor()
                 self.__cur.execute(sql)
                 result = self.__cur.fetchall()
-                #print("check point connect", self.__server_db_name)
                 
                 if (self.__server_db_name,) in result and create_db_value == 0: #Only opening database for other querys functions like insert, select, delete, update
                     self.close_db()
-                    #print("intentando conectar",port_ssh_tunnel)
                     self.__miConexion = pymysql.connect(host=self.__server_db_ip, port=self.__server_db_port, user=self.__server_db_user, passwd=self.__server_db_password, db=self.__server_db_name)
-                    #self.__miConexion = pymysql.connect(host=self.__server_db_ip, port=puerto, user=self.__server_db_user, passwd=self.__server_db_password, db=self.__server_db_name)
                     self.__cur = self.__miConexion.cursor()
-                    #print("connect")
-                    return (True, "Database '" + self.__server_db_name + "' was open sucessfully. ")
-                elif (self.__server_db_name,) in result and create_db_value == 1: #Catches when is trying creating database that already exist
+                    return (True, "Database '" + self.__server_db_name + "' was sucessfully open. ")
+                elif (self.__server_db_name,) in result and create_db_value == 1: #Catches when is trying to create database that already exist
                     self.close_db()
                     return (False, "Database '" + self.__server_db_name + "' already exist. ")
-                elif (self.__server_db_name,) not in result and create_db_value == 1: #Catches when is trying create a new database and name is available
+                elif (self.__server_db_name,) not in result and create_db_value == 1: #Catches when is trying to create a new database and name is available
                         return (True, "Database '" + self.__server_db_name + "' is able to create. ")    
-            except:
-                return (False, "Error conecting tu database '" + self.__server_db_name + "'")
+            except BaseException as err:
+                return (False, "Error conecting to database '" + self.__server_db_name, err)
         else:
             return (False, "System DB name wrong or is missing. '" + self.__server_db_system + "'")
 
     def close_db(self):
         try:
             self.__cur.close()
-        except:
-            pass
+        except BaseException as err:
+            print ("Except closing Cursor. Detail: ", err)
         try:
             self.__miConexion.close()
-        except:
-            pass
-
-
-
+        except BaseException as err:
+            print ("Except closing DB. Detail: " , err)
+            
     def verify_table_exist(self,table_name):
         
         if self.__server_db_system == 'mysql':
@@ -201,18 +208,18 @@ class database():
                 else:
                     self.close_db()
                     return ("Creating database failed. " , connect[1], self.__server_db_system)
-            except:    
+            except BaseException as err:    
                 self.close_db()
-                return("Error creating database", self.__server_db_name,self.__server_db_system)
+                return("Error creating database", self.__server_db_name,self.__server_db_system, err)
         
         elif (self.__server_db_system == 'sqlite3'):
             try:
                 open_db = open(self.__server_db_name)
                 if open_db:
                     msg = "Database '" + self.__server_db_name + "' already exists. "
-            except:
+            except BaseException as err:
                 connect = self.connect_db()
-                msg = "The database '"+ self.__server_db_name +"' was created suscessfully. "
+                msg = "The database '"+ self.__server_db_name +"' was created suscessfully. ", err
         self.close_db()
         return (msg,)
 
@@ -222,8 +229,8 @@ class database():
             if self.__server_db_system == 'sqlite3':
                 database_file = open(self.__server_db_name)
                 database_file.close()
-        except:
-            return ("Error creating table '" + table_name + "'. database do not exist", self.__server_db_name,self.__server_db_system)
+        except BaseException as err:
+            return ("Error creating table '" + table_name + "'. database do not exist", self.__server_db_name,self.__server_db_system, err)
         try:
             connect = self.connect_db()
             if True in connect: 
@@ -236,12 +243,12 @@ class database():
                         sql=' '.join(sql_create_table)
                         self.__cur.execute(sql)                    
                         return("Table '" + table_name + "' created succesfully. in '" + self.__server_db_name + "' " + self.__server_db_system)
-                    except:
-                        return ("Error creating table '" + table_name + "' ", sql_create_table, self.__server_db_system,self.__server_db_name)
+                    except BaseException as err:
+                        return ("Error creating table '" + table_name + "' ", sql_create_table, self.__server_db_system,self.__server_db_name, err)
             else:
                 return ("Error creating table '" + table_name + "'. " , connect[1],self.__server_db_system)
-        except:
-            return ("Error creating table '" + table_name + "' ", sql_create_table, self.__server_db_system,self.__server_db_name)
+        except BaseException as err:
+            return ("Error creating table '" + table_name + "' ", sql_create_table, self.__server_db_system,self.__server_db_name, err)
         finally:
             self.close_db()
 
@@ -259,8 +266,8 @@ class database():
             if connect:
                 try:
                     self.__cur.execute(sql)
-                except:
-                    return ("error","Error in SQL:> ", sql, self.__server_db_system,self.__server_db_name)
+                except BaseException as err:
+                    return ("error","Error in SQL:> ", sql, self.__server_db_system,self.__server_db_name, err)
                 result = self.__cur.fetchall()
                 self.close_db()
                 if result == ():
@@ -269,8 +276,8 @@ class database():
                     return result
             else:
                 return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
-        except:
-            return("Something went wrong",self.__server_db_system,self.__server_db_name)
+        except BaseException as err:
+            return("Something went wrong",self.__server_db_system,self.__server_db_name, err)
         finally:
             self.close_db()
     #END SELECT*****************************************************************
@@ -294,8 +301,8 @@ class database():
                     try:
                         self.__cur.execute(sql)
                         self.__miConexion.commit()
-                    except:
-                        return ("error","Error in SQL:> ", sql, self.__server_db_system,self.__server_db_name)
+                    except BaseException as err:
+                        return ("error","Error in SQL:> ", sql, self.__server_db_system,self.__server_db_name, err)
                     result = self.__cur.rowcount
                     self.close_db()
                     if result == 0:
@@ -327,8 +334,8 @@ class database():
                     try:
                         self.__cur.execute(sql)
                         self.__miConexion.commit()
-                    except:
-                        return ("error","Error in SQL:> ", sql, self.__server_db_system, self.__server_db_name)
+                    except BaseException as err:
+                        return ("error","Error in SQL:> ", sql, self.__server_db_system, self.__server_db_name, err)
                     result = ("1 record inserted in table '" + table_name + "', ID:", self.__cur.lastrowid, self.__server_db_system,self.__server_db_name)
                     self.close_db()
                     return result
@@ -360,8 +367,8 @@ class database():
                     try:
                         self.__cur.execute(sql)
                         self.__miConexion.commit()
-                    except:
-                        return ("error","Error in SQL:> ", sql)
+                    except BaseException as err:
+                        return ("error","Error in SQL:> ", sql, err)
                     result = (self.__cur.rowcount, "record(s) affected in table '" + table_name + "'" , self.__server_db_system,self.__server_db_name)
                     self.close_db()
                     return result
@@ -385,15 +392,14 @@ class database():
 
 #BEGIN SQLITE3 +++++++++++++++++++++++++++++++++++++++++++++++
 
-#db_1 = database(server_db_local_config_sqlite3_1)
-db_1 = database(server_db_local_config_mysql_1)
+# db_1 = database(server_db_local_config_sqlite3_1)
 
 
-# db_2 = database(server_db_remote_ssh_tunnel_config_mysql_1)
+# db_1 = database(server_db_local_config_mysql_1)
 
 
-#conexion = db_2.connect_db(puerto)
-#print(conexion)
+db_2 = database(server_db_remote_ssh_tunnel_config_mysql_1)
+
 
 
 #*******************************************************
@@ -408,10 +414,11 @@ db_1 = database(server_db_local_config_mysql_1)
 #Crear tablas
 #create_table = db_1.create_table(sql_create_table_users_sqlite3)
 # create_table = db_1.create_table(sql_create_table_users_mysql)
-db_1.create_table(sql_create_table_users_mysql)
-#create_table = db_2.create_table(sql_create_table_users_mysql)
-# create_table = db_2.create_table(sql_create_table_users_mysql)
-# print(create_table)
+# create_table = db_1.create_table(sql_create_table_users_mysql)
+create_table = db_2.create_table(sql_create_table_users_mysql)
+
+
+print(create_table)
 
 #*******************************************************
 #Parametros para insertar registros
