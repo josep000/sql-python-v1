@@ -356,36 +356,36 @@ class database():
     #END INSERT*****************************************************************
 
     #BEGIN UPDATE*************************************************
-    def update_from_table(self,table_name,sql_statement, table_data):
+    def update_from_table(self,sql_statement,table_name,table_data=False):
         #arg active = values that are partially errased from system and is optional, values 0 or 1)
         table_name=str(table_name)
-        if ((type(sql_statement)==dict) and (sql_statement!="") and (table_name!="")):
-            sql = "SELECT * FROM " + table_name + " WHERE " + ' and '.join('{} = {}'.format(key, value) for key, value in sql_statement.items())
+        print(type(sql_statement))
+        if type(table_data)==dict and table_name!="" and type(sql_statement)==dict and sql_statement:
+            # if (table_data!="" and type(table_data==dict) and table_name!="" and type(sql_statement==dict) and (sql_statement!="")):
+            sql = "UPDATE " + table_name + " SET " + ' , '.join('{} = {}'.format(key, value) for key, value in table_data.items()) + " WHERE " + ' and '.join('{} = {}'.format(key, value) for key, value in sql_statement.items())
+        elif((type(sql_statement)==str) and (sql_statement!="") and (table_name!="") and type(table_data)==dict and table_data):
+            sql = "UPDATE " + table_name + " SET " + ' , '.join('{} = {}'.format(key, value) for key, value in table_data.items()) + " WHERE " + sql_statement
         elif((type(sql_statement)==str) and (sql_statement!="") and (table_name!="")):
             sql = sql_statement
         else:
-            return ("error","1 or more args are missing or incomplete", self.__server_db_system,self.__server_db_name)
-        if ((table_data!="") and (type(table_data==dict)) and (table_name!="") and (type(sql_statement==dict)) and (sql_statement!="")):
-            connect = self.connect_db()
-            if connect:
-                verify_table_ex = self.verify_table_exist(table_name)
-                if True in verify_table_ex:
-                    sql = "UPDATE " + table_name + " SET " + ' , '.join('{} = {}'.format(key, value) for key, value in table_data.items()) + " WHERE " + ' and '.join('{} = {}'.format(key, value) for key, value in sql_statement.items())
-                    try:
-                        self.__cur.execute(sql)
-                        self.__miConexion.commit()
-                    except BaseException as err:
-                        return ("error","Error in SQL:> ", sql, err)
-                    result = (self.__cur.rowcount, "record(s) affected in table '" + table_name + "'" , self.__server_db_system,self.__server_db_name)
-                    self.close_db()
-                    return result
-                else:
-                    self.close_db()
-                    return (verify_table_ex[1])
-            else:
-                return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
-        else:
             return ("error","1 or more args are missing or incomplete",self.__server_db_system,self.__server_db_name)
+        
+        if self.connect_db():
+            verify_table_ex = self.verify_table_exist(table_name)
+            if True in verify_table_ex:
+                try:
+                    self.__cur.execute(sql)
+                    self.__miConexion.commit()
+                except BaseException as err:
+                    return ("error","Error in SQL:> ", sql, err)
+                result = (self.__cur.rowcount, "record(s) affected in table '" + table_name + "'" , self.__server_db_system,self.__server_db_name)
+                self.close_db()
+                return result
+            else:
+                self.close_db()
+                return (verify_table_ex[1])
+        else:
+                return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
     #END UPDATE*****************************************************************
 
 
@@ -423,20 +423,20 @@ db_2 = database(server_db_local_config_mysql_1) # local database conection
 #Crear tablas
 # create_table = db_1.create_table(sql_create_table_users_sqlite3)
 
-create_table = db_2.create_table(sql_create_table_users_mysql)
+# create_table = db_2.create_table(sql_create_table_users_mysql)
 
 # create_table = db_3.create_table(sql_create_table_users_mysql)
 
 
-print(create_table)
+# print(create_table)
 
 #*******************************************************
 #Parametros para insertar registros
-tabla_usuarios = "users" #Nombre de la tabla
+table_name = "users" #Nombre de la tabla
 
 #Dict que contiene los datos que serán registrados en la tabla. "Nombre de campo" : "Valor" / "field name" : "value"
-datos_usuario = {
-    "username" : "'Jose'",
+table_data = {
+    "username" : "'huse'",
     "country" : "'Uruguay'",
     "phone" : "'774433347'",
     "age" : "'30'"
@@ -460,11 +460,15 @@ datos_usuario = {
 #     "id" : "1",
 # }
 
-#sql_statement = "SELECT  * FROM users WHERE id BETWEEN 5 AND 10"
+#sql_statement = "SELECT * FROM users WHERE id BETWEEN 5 AND 10"
 
-sql_statement = {
-    "id" : "2",
-}
+sql_statement = {}
+
+# sql_statement = {
+#     "id" : "3",
+# }
+
+
 
 # sql_statement = {
 #     "id" : "1",
@@ -480,10 +484,11 @@ sql_statement = {
 # }
 
 
-datos_usuario = {
-    "username" : "'Pedro'",
-}
-# sql_statement = "UPDATE " +  tabla_usuarios + " SET name = Pedro  WHERE id = 2"
+
+# table_data = {
+#     "username" : "'y44epeto'",
+# }
+sql_statement = "id = 3"
 
 #query_select_1 = db_1.select_from_table(tabla_usuarios,sql_statement)
 #print(query_select_1)
@@ -495,7 +500,8 @@ datos_usuario = {
 # print(query_delete)
 
 
-query_update = db_2.update_from_table(tabla_usuarios,sql_statement,datos_usuario)
+# query_update = db_2.update_from_table(sql_statement,table_name,table_data)
+query_update = db_2.update_from_table(sql_statement,table_name,table_data)
 print(query_update)
 
 #END SQLITE3--------------------------------------------------
