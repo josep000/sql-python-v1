@@ -359,17 +359,12 @@ class database():
     def update_from_table(self,sql_statement,table_name,table_data=False):
         #arg active = values that are partially errased from system and is optional, values 0 or 1)
         table_name=str(table_name)
-        print(type(sql_statement))
-        if type(table_data)==dict and table_name!="" and type(sql_statement)==dict and sql_statement:
-            # if (table_data!="" and type(table_data==dict) and table_name!="" and type(sql_statement==dict) and (sql_statement!="")):
-            sql = "UPDATE " + table_name + " SET " + ' , '.join('{} = {}'.format(key, value) for key, value in table_data.items()) + " WHERE " + ' and '.join('{} = {}'.format(key, value) for key, value in sql_statement.items())
-        elif((type(sql_statement)==str) and (sql_statement!="") and (table_name!="") and type(table_data)==dict and table_data):
+        if((type(sql_statement)==str) and (sql_statement!="") and (table_name!="") and type(table_data)==dict and table_data):
             sql = "UPDATE " + table_name + " SET " + ' , '.join('{} = {}'.format(key, value) for key, value in table_data.items()) + " WHERE " + sql_statement
         elif((type(sql_statement)==str) and (sql_statement!="") and (table_name!="")):
             sql = sql_statement
         else:
             return ("error","1 or more args are missing or incomplete",self.__server_db_system,self.__server_db_name)
-        
         if self.connect_db():
             verify_table_ex = self.verify_table_exist(table_name)
             if True in verify_table_ex:
@@ -500,11 +495,65 @@ sql_statement = "id = 3"
 # print(query_delete)
 
 
-# query_update = db_2.update_from_table(sql_statement,table_name,table_data)
-query_update = db_2.update_from_table(sql_statement,table_name,table_data)
-print(query_update)
+
 
 #END SQLITE3--------------------------------------------------
 
 # tunnel.stop()
+
+
+
+
+
+
+
+
+
+##############################################################################################
+########################         BEGIN UPDATE EXAMPLES           #############################
+
+# EXAMPLE 1: sql_statement as str will be readed as the condition of how many records will be updated
+'''
+table_name = "users" # This is the table that will be affected
+sql_statement = "id = 3 or id = 2" # this var will be the condition as is written
+table_data = { # This is a dict represent { columns : value } to be updated 
+    "username" : "'333'",
+    "country" : "'Uruguay'",
+    "phone" : "'774433347'",
+    "age" : "'30'"
+}
+query = db_2.update_from_table(sql_statement,table_name,table_data)
+print (query)
+'''
+# END EXAMPLE 1
+
+
+# EXAMPLE 2: sql_statement must be the complete sql sentence with all columns and values
+'''
+table_name = "users" # This is the table that will be affected
+sql_statement = "UPDATE users SET username = 'Jossse', country = 'Uruguay' WHERE id = 3"
+query = db_2.update_from_table(sql_statement,table_name)
+print (query)
+'''
+
+# END EXAMPLE 2
+
+########################         END UPDATE EXAMPLES           ###############################
+##############################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 print("mod db ok")
