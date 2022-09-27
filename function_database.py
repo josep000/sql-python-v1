@@ -290,43 +290,6 @@ class database():
             self.close_db()
     #END SELECT*****************************************************************
 
-    
-    #BEGIN DELETE*************************************************
-    def delete_from_table(self,table_name, sql_statement):
-        table_name=str(table_name)
-        if ((type(sql_statement)==dict) and (sql_statement!="") and (table_name!="")):
-            sql = "SELECT * FROM " + table_name + " WHERE " + ' and '.join('{} = {}'.format(key, value) for key, value in sql_statement.items())
-        elif((type(sql_statement)==str) and (sql_statement!="") and (table_name!="")):
-            sql = sql_statement
-        else:
-            return ("error","1 or more args are missing or incomplete", self.__server_db_system,self.__server_db_name)
-        if ((table_name!="") and (type(sql_statement==dict)) and (sql_statement!="")):
-            connect = self.connect_db()
-            if connect:
-                verify_table_ex = self.verify_table_exist(table_name)
-                if True in verify_table_ex:
-                    sql = "DELETE FROM " + table_name + " WHERE " + ' and '.join('{} = {}'.format(key, value) for key, value in sql_statement.items())
-                    try:
-                        self.__cur.execute(sql)
-                        self.__miConexion.commit()
-                    except BaseException as err:
-                        return ("error","Error in SQL:> ", sql, self.__server_db_system,self.__server_db_name, err)
-                    result = self.__cur.rowcount
-                    self.close_db()
-                    if result == 0:
-                        return ("error","No matches found in table " + table_name, self.__server_db_system,self.__server_db_name)
-                    else:
-                        return (result," record(s) deleted in table '" + table_name + "'", self.__server_db_system,self.__server_db_name)
-                else:
-                    self.close_db()
-                    return (verify_table_ex[1])
-            else:
-                return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
-        else:
-            return ("error","1 or more args are missing or incomplete", self.__server_db_system,self.__server_db_name)
-    #END DELETE*****************************************************************
-
-
     #BEGIN INSERT*************************************************
     def insert_row_table(self,table_name,table_data):
         #arg active = values that are partially errased from system and is optional, values 0 or 1)
@@ -359,9 +322,9 @@ class database():
     def update_from_table(self,sql_statement,table_name,table_data=False):
         #arg active = values that are partially errased from system and is optional, values 0 or 1)
         table_name=str(table_name)
-        if((type(sql_statement)==str) and (sql_statement!="") and (table_name!="") and type(table_data)==dict and table_data):
+        if((type(sql_statement)==str) and (sql_statement!="") and (table_name!="") and (type(table_name)==str) and type(table_data)==dict and table_data):
             sql = "UPDATE " + table_name + " SET " + ' , '.join('{} = {}'.format(key, value) for key, value in table_data.items()) + " WHERE " + sql_statement
-        elif((type(sql_statement)==str) and (sql_statement!="") and (table_name!="")):
+        elif((type(sql_statement)==str) and (sql_statement!="") and (type(table_name)==str) and (table_name!="") and table_data==False):
             sql = sql_statement
         else:
             return ("error","1 or more args are missing or incomplete",self.__server_db_system,self.__server_db_name)
@@ -380,10 +343,39 @@ class database():
                 self.close_db()
                 return (verify_table_ex[1])
         else:
-                return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
+            return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
     #END UPDATE*****************************************************************
 
-
+    #BEGIN DELETE*************************************************
+    def delete_from_table(self, sql_statement,table_name, sqlComplete = False):
+        table_name=str(table_name)
+        if ((type(sql_statement)==str) and (sql_statement!="") and ((type(table_name)==str)) and (table_name!="") and sqlComplete==1):
+            sql = sql_statement
+        elif ((type(sql_statement)==str) and (sql_statement!="") and ((type(table_name)==str)) and (table_name!="") and sqlComplete==False):
+            sql = "DELETE FROM " + table_name + " WHERE " +  sql_statement
+            # sql = "DELETE FROM " + table_name + " WHERE " + ' and '.join('{} = {}'.format(key, value) for key, value in sql_statement.items())
+        else:
+            return ("error","1 or more args are missing or incomplete", self.__server_db_system,self.__server_db_name)
+        if self.connect_db():
+            verify_table_ex = self.verify_table_exist(table_name)
+            if True in verify_table_ex:
+                try:
+                    self.__cur.execute(sql)
+                    self.__miConexion.commit()
+                except BaseException as err:
+                    return ("error","Error in SQL:> ", sql, self.__server_db_system,self.__server_db_name, err)
+                result = self.__cur.rowcount
+                self.close_db()
+                if result == 0:
+                    return ("error","No matches found in table " + table_name, self.__server_db_system,self.__server_db_name)
+                else:
+                    return (result," record(s) deleted in table '" + table_name + "'", self.__server_db_system,self.__server_db_name)
+            else:
+                self.close_db()
+                return (verify_table_ex[1])
+        else:
+            return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
+    #END DELETE*****************************************************************
 
 
 # TESTING EXAMPLES FOR ALL FUNCTIONS OF SQL
@@ -502,17 +494,10 @@ sql_statement = "id = 3"
 # tunnel.stop()
 
 
-
-
-
-
-
-
-
 ##############################################################################################
-########################         BEGIN UPDATE EXAMPLES           #############################
+########################         BEGIN INSERT EXAMPLES           #############################
 
-# EXAMPLE 1: sql_statement as str will be readed as the condition of how many records will be updated
+# EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
 '''
 table_name = "users" # This is the table that will be affected
 sql_statement = "id = 3 or id = 2" # this var will be the condition as is written
@@ -535,16 +520,57 @@ sql_statement = "UPDATE users SET username = 'Jossse', country = 'Uruguay' WHERE
 query = db_2.update_from_table(sql_statement,table_name)
 print (query)
 '''
+# END EXAMPLE 2
 
+########################         END INSERT EXAMPLES           ###############################
+##############################################################################################
+
+##############################################################################################
+########################         BEGIN UPDATE EXAMPLES           #############################
+
+# EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
+"""table_name = "users" # This is the table that will be affected
+sql_statement = "id = 3 or id = 2" # this var will be the condition as is written
+table_data = { # This is a dict represent { columns : value } to be updated 
+    "username" : "'333'",
+    "country" : "'Uruguay'",
+    "phone" : "'774433347'",
+    "age" : "'30'"
+}
+query = db_2.update_from_table(sql_statement,table_name,table_data)
+print (query)"""
+
+# END EXAMPLE 1
+
+# EXAMPLE 2: sql_statement must be the complete sql sentence with all columns and values
+"""table_name = "users" # This is the table that will be affected
+sql_statement = "UPDATE users SET username = 'Jossse', country = 'Uruguay' WHERE id = 3"
+query = db_2.update_from_table(sql_statement,table_name)
+print (query)"""
 # END EXAMPLE 2
 
 ########################         END UPDATE EXAMPLES           ###############################
 ##############################################################################################
 
+##############################################################################################
+########################         BEGIN DELETE EXAMPLES           #############################
 
+# EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
+""" table_name = "users" # This is the table that will be affected
+sql_statement = "id = 3" # this var will be the condition as is written
+query = db_2.delete_from_table(sql_statement,table_name)
+print (query) """
+# END EXAMPLE 1
 
+# EXAMPLE 2: sql_statement must be the complete sql sentence with a third parameter with number 1 on calling function
+""" table_name = "users" # This is the table that will be affected
+sql_statement = "DELETE FROM users WHERE id = 2"
+query = db_2.delete_from_table(sql_statement,table_name,1) Adding a number 1 on last parameter is for allowing the function to read sql_statement
+print (query) """
+# END EXAMPLE 2
 
-
+########################         END DELETE EXAMPLES           ###############################
+##############################################################################################
 
 
 
