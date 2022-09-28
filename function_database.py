@@ -291,29 +291,32 @@ class database():
     #END SELECT*****************************************************************
 
     #BEGIN INSERT*************************************************
-    def insert_row_table(self,table_name,table_data):
+    def insert_row_table(self,table_name,table_data,sql_statement):
         table_name=str(table_name)
-        if ((table_data!="") and (type(table_data==dict))(table_name!="")):
-            connect = self.connect_db()
-            if connect:
-                verify_table_ex = self.verify_table_exist(table_name)
-                if True in verify_table_ex:
-                    sql = "INSERT INTO " + table_name + " (" + ",".join(list(table_data.keys())) + ") VALUES (" + ",".join(list(table_data.values())) + ")"
-                    try:
-                        self.__cur.execute(sql)
-                        self.__miConexion.commit()
-                    except BaseException as err:
-                        return ("error","Error in SQL:> ", sql, self.__server_db_system, self.__server_db_name, err)
-                    result = ("1 record inserted in table '" + table_name + "', ID:", self.__cur.lastrowid, self.__server_db_system,self.__server_db_name)
-                    self.close_db()
-                    return result
-                else:
-                    self.close_db()
-                    return (verify_table_ex[1])
-            else:
-                return ("error", "Error conecting to database",self.__server_db_system,self.__server_db_name)
+        if table_data and type(table_data)==dict and table_name!="" and type(table_name)==str and sql_statement==False:
+            sql = "INSERT INTO " + table_name + " (" + ",".join(list(table_data.keys())) + ") VALUES (" + ",".join(list(table_data.values())) + ")"
+        elif table_data == False and table_name!="" and type(table_name)==str and sql_statement and type(sql_statement)==str and sql_statement!="":
+            sql = sql_statement
         else:
             return ("error","1 or more args are missing or incomplete",self.__server_db_system,self.__server_db_name)
+            
+        if self.connect_db():
+            verify_table_ex = self.verify_table_exist(table_name)
+            if True in verify_table_ex:
+                try:
+                    self.__cur.execute(sql)
+                    self.__miConexion.commit()
+                except BaseException as err:
+                    return ("error","Error in SQL:> ", sql, self.__server_db_system, self.__server_db_name, err)
+                result = ("1 record inserted in table '" + table_name + "', ID:", self.__cur.lastrowid, self.__server_db_system,self.__server_db_name)
+                self.close_db()
+                return result
+            else:
+                self.close_db()
+                return (verify_table_ex[1])
+        else:
+            return ("error", "Error conecting to database",self.__server_db_system,self.__server_db_name)
+            
     #END INSERT*****************************************************************
 
     #BEGIN UPDATE*************************************************
@@ -345,13 +348,12 @@ class database():
     #END UPDATE*****************************************************************
 
     #BEGIN DELETE*************************************************
-    def delete_from_table(self, sql_statement,table_name, sqlComplete = False):
+    def delete_from_table(self, sql_statement,table_name, genericSql=False):
         table_name=str(table_name)
-        if ((type(sql_statement)==str) and (sql_statement!="") and ((type(table_name)==str)) and (table_name!="") and sqlComplete==1):
+        if ((type(sql_statement)==str) and (sql_statement!="") and ((type(table_name)==str)) and (table_name!="") and genericSql==1):
             sql = sql_statement
-        elif ((type(sql_statement)==str) and (sql_statement!="") and ((type(table_name)==str)) and (table_name!="") and sqlComplete==False):
+        elif ((type(sql_statement)==str) and (sql_statement!="") and ((type(table_name)==str)) and (table_name!="") and genericSql==False):
             sql = "DELETE FROM " + table_name + " WHERE " +  sql_statement
-            # sql = "DELETE FROM " + table_name + " WHERE " + ' and '.join('{} = {}'.format(key, value) for key, value in sql_statement.items())
         else:
             return ("error","1 or more args are missing or incomplete", self.__server_db_system,self.__server_db_name)
         if self.connect_db():
@@ -375,7 +377,9 @@ class database():
             return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
     #END DELETE*****************************************************************
 
-
+    
+    
+    
 # TESTING EXAMPLES FOR ALL FUNCTIONS OF SQL
 
 
@@ -447,7 +451,7 @@ table_data = {
 
 #sql_statement = "SELECT * FROM users WHERE id BETWEEN 5 AND 10"
 
-sql_statement = {}
+# sql_statement = {}
 
 # sql_statement = {
 #     "id" : "3",
@@ -473,7 +477,7 @@ sql_statement = {}
 # table_data = {
 #     "username" : "'y44epeto'",
 # }
-sql_statement = "id = 3"
+# sql_statement = "id = 3"
 
 #query_select_1 = db_1.select_from_table(tabla_usuarios,sql_statement)
 #print(query_select_1)
@@ -496,27 +500,24 @@ sql_statement = "id = 3"
 ########################         BEGIN INSERT EXAMPLES           #############################
 
 # EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
-'''
 table_name = "users" # This is the table that will be affected
-sql_statement = "id = 3 or id = 2" # this var will be the condition as is written
-table_data = { # This is a dict represent { columns : value } to be updated 
+table_data = { # This is a dict represent { columns : value } to be inserted 
     "username" : "'333'",
     "country" : "'Uruguay'",
     "phone" : "'774433347'",
     "age" : "'30'"
 }
-query = db_2.insert_from_table(sql_statement,table_name,table_data)
+query = db_2.insert_row_table(table_name,table_data,False)
 print (query)
-'''
 # END EXAMPLE 1
 
 
 # EXAMPLE 2: sql_statement must be the complete sql sentence with all columns and values
 
-table_name = "users" # This is the table that will be affected
+""" table_name = "users" # This is the table that will be affected
 sql_statement = "INSERT INTO users (username,country,phone,age) value ('Jose','Uruguay','099333111','30')"
-query = db_2.insert_from_table(sql_statement,table_name)
-print (query)
+query = db_2.insert_row_table(table_name,False,sql_statement)
+print (query) """
 
 # END EXAMPLE 2
 
