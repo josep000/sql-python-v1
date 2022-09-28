@@ -292,8 +292,6 @@ class database():
 
     #BEGIN INSERT*************************************************
     def insert_row_table(self,table_name,table_data):
-        #arg active = values that are partially errased from system and is optional, values 0 or 1)
-        msg = ""
         table_name=str(table_name)
         if ((table_data!="") and (type(table_data==dict))(table_name!="")):
             connect = self.connect_db()
@@ -507,19 +505,19 @@ table_data = { # This is a dict represent { columns : value } to be updated
     "phone" : "'774433347'",
     "age" : "'30'"
 }
-query = db_2.update_from_table(sql_statement,table_name,table_data)
+query = db_2.insert_from_table(sql_statement,table_name,table_data)
 print (query)
 '''
 # END EXAMPLE 1
 
 
 # EXAMPLE 2: sql_statement must be the complete sql sentence with all columns and values
-'''
+
 table_name = "users" # This is the table that will be affected
-sql_statement = "UPDATE users SET username = 'Jossse', country = 'Uruguay' WHERE id = 3"
-query = db_2.update_from_table(sql_statement,table_name)
+sql_statement = "INSERT INTO users (username,country,phone,age) value ('Jose','Uruguay','099333111','30')"
+query = db_2.insert_from_table(sql_statement,table_name)
 print (query)
-'''
+
 # END EXAMPLE 2
 
 ########################         END INSERT EXAMPLES           ###############################
