@@ -1,103 +1,4 @@
 
-
-
-
-domainDbUserName = "username"
-domainDbPassword = "password"
-domainSshUserName = "username"
-domainSshPassword = "password"
-
-
-
-
-
-#BEGIN CONFIG SQLITE3*********************************************>
-
-from os import close
-import sqlite3
-from typing import Coroutine
-server_db_local_config_sqlite3_1 = {
-    "server_db_name" : 'crud1',
-    "server_db_system" : 'sqlite3',
-    }
-
-
-#END CONFIG SQLITE3*********************************************<
-
-
-
-#BEGIN CONFIG MYSQL*********************************************>
-import pymysql
-
-server_db_local_config_mysql_1 = {
-    "server_db_ip" : '127.0.0.1',
-    "server_db_port" : 3306, #3306 is defaul port value of mysql
-    "server_db_user" : 'jose',
-    "server_db_password" : '',
-    "server_db_name" : 'crud1',
-    "server_db_system" : 'mysql'
-    }
-
-# server_db_local_config_mysql_2 = {
-#     "server_db_ip" : '127.0.0.1',
-#     "server_db_port" : 3306, #3306 is defaul port value of mysql
-#     "server_db_user" : 'root',
-#     "server_db_password" : '',
-#     "server_db_name" : 'crud_python2',
-#     "server_db_system" : 'mysql'
-#     }
-
-
-##############################################################################################
-########################         BEGIN CONFIG MYSQL WITH SSH TUNNEL           ################
-
-#BEGIN TUNNEL SSH
-port_ssh_tunnel=0
-from sshtunnel import SSHTunnelForwarder
-class tunnel_ssh():
-    def __init__(self):
-        self.__server = SSHTunnelForwarder(
-        ('162.0.209.168',21098),
-        ssh_username=domainSshUserName,
-        ssh_password=domainSshPassword,
-
-        remote_bind_address=('127.0.0.1', 3306)
-        ) 
-    def start(self):
-        try:
-            self.__server.start()
-            return (self.__server.local_bind_port)  # show assigned local port
-        except:
-            print ("Error starting tunnel ssh")
-
-    def stop(self):
-        try:
-            #work with `SECRET SERVICE` through `server.local_bind_port`.
-            self.__server.stop()
-        except:
-            print("Error stoping tunnel ssh")
-#ENF TUNNEL SSH
-
-
-
-tunnel = tunnel_ssh() #Use this line if gona use tunnel ssh
-port_ssh_tunnel = tunnel.start() #Use this line if gona use tunnel ssh
-print ('Port ssh: ' , port_ssh_tunnel)
-server_db_remote_ssh_tunnel_config_mysql_1 = {
-    "server_db_ip" : '127.0.0.1',
-    "server_db_port" : port_ssh_tunnel, #3306 is defaul port value of mysql local/ 5522 is port of namecheap / with tunnel ssh is server.local_bind_port
-    "server_db_user" : domainDbUserName,
-    "server_db_password" : domainDbPassword,
-    "server_db_name" : 'seguxjxs_crud_python_jpinto_1',
-    "server_db_system" : 'mysql',
-    }
-
-
-########################         END CONFIG MYSQL WITH SSH TUNNEL           ##################
-##############################################################################################
-
-
-
 class database():
     def __init__(self,server_db_config):
         self.__server_db_name = server_db_config["server_db_name"]
@@ -169,6 +70,7 @@ class database():
 
     def create_db(self):
         create_db_value = 1 #This value is used in connect() function to evaluate create a new database.
+        
         if (self.__server_db_system == 'mysql'):
             try:
                 connect = self.connect_db(create_db_value)
@@ -341,58 +243,123 @@ class database():
 
     
     
-    
-# TESTING EXAMPLES FOR ALL FUNCTIONS OF SQL
 
 
 
-
-
-#BEGIN SQLITE3 +++++++++++++++++++++++++++++++++++++++++++++++
-
-# db = database(server_db_local_config_sqlite3_1) # local database conection
-
-
-db = database(server_db_local_config_mysql_1) # local database conection
-
-
-# db = database(server_db_remote_ssh_tunnel_config_mysql_1) # remote dababase conection
-
-
-
-#*******************************************************
-# Create Database
-# createdb1 = db.create_db()
-# print(createdb1)
-
-# createdb2 = db.create_db()
-# print(createdb2)
-
-
-#*******************************************************
-
-##############################################################################################
-########################         BEGIN CREATE TABLE EXAMPLES           #######################
-createdb = db.create_db()
-print(createdb)
-########################         END CREATE TABLE EXAMPLES           #########################
-##############################################################################################
 
 
 ##############################################################################################
-########################         BEGIN CREATE TABLE EXAMPLES           #######################
-# EXAMPLE 1: FOR sqlinte
-table_name = "users"
-sql_create_table_users_sqlite3 ='''CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)'''
-create_table = db.create_table(sql_create_table_users_sqlite3)
-print(create_table)
+########################         BEGIN CONFIG DB OBJECT         ##############################
+
+# EXAMPLE 1: FOR SQLITE3
+""" from os import close
+import sqlite3
+from typing import Coroutine
+
+server_db_local_config_sqlite3 = {
+    "server_db_name" : 'crud1',
+    "server_db_system" : 'sqlite3',
+    }
+
+db = database(server_db_local_config_sqlite3) # local database conection """
 # END EXAMPLE 1
 
-# EXAMPLE 2
-table_name = "users"
+# EXAMPLE 2: FOR MYSQL
+""" import pymysql
+
+server_db_local_config_mysql = {
+    "server_db_ip" : '127.0.0.1',
+    "server_db_port" : 3306, #3306 is defaul port value of mysql
+    "server_db_user" : 'jose',
+    "server_db_password" : '',
+    "server_db_name" : 'crud12',
+    "server_db_system" : 'mysql'
+    }
+
+db = database(server_db_local_config_mysql) # local database conection """
+# END EXAMPLE 2
+
+# EXAMPLE 3 MYSQL WITH SSH TUNNEL
+""" import pymysql
+from sshtunnel import SSHTunnelForwarder
+domainDbUserName = "username"
+domainDbPassword = "password"
+domainSshUserName = "username"
+domainSshPassword = "password"
+port_ssh_tunnel=0
+class tunnel_ssh():
+    def __init__(self):
+        self.__server = SSHTunnelForwarder(
+        ('162.0.209.168',21098),
+        ssh_username=domainSshUserName,
+        ssh_password=domainSshPassword,
+
+        remote_bind_address=('127.0.0.1', 3306)
+        ) 
+    def start(self):
+        try:
+            self.__server.start()
+            return (self.__server.local_bind_port)  # show assigned local port
+        except:
+            print ("Error starting tunnel ssh")
+
+    def stop(self):
+        try:
+            #work with `SECRET SERVICE` through `server.local_bind_port`.
+            self.__server.stop()
+        except:
+            print("Error stoping tunnel ssh")
+
+tunnel = tunnel_ssh() #Use this line if gona use tunnel ssh
+port_ssh_tunnel = tunnel.start() #Use this line if gona use tunnel ssh
+print ('Port ssh: ' , port_ssh_tunnel)
+server_db_remote_ssh_tunnel_config_mysql = {
+    "server_db_ip" : '127.0.0.1',
+    "server_db_port" : port_ssh_tunnel, #3306 is defaul port value of mysql local/ 5522 is port of namecheap / with tunnel ssh is server.local_bind_port
+    "server_db_user" : domainDbUserName,
+    "server_db_password" : domainDbPassword,
+    "server_db_name" : 'seguxjxs_crud_python_jpinto_1',
+    "server_db_system" : 'mysql',
+    }
+
+db = database(server_db_remote_ssh_tunnel_config_mysql) # remote dababase conection """
+# END EXAMPLE 3
+
+########################         END CONFIG DB OBJECT         ################################
+##############################################################################################
+
+    
+    
+    
+    
+    
+
+##############################################################################################
+########################         BEGIN CREATE DATABASE EXAMPLES           ####################
+""" createdb = db.create_db()
+print(createdb) """
+########################         END CREATE DATABASE EXAMPLES           ######################
+##############################################################################################
+
+
+
+
+
+
+##############################################################################################
+########################         BEGIN CREATE TABLE EXAMPLES           #######################
+# EXAMPLE 1: FOR sqlite3
+""" table_name = "users"
+sql_create_table_users_sqlite3 ='''CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)'''
+create_table = db.create_table(sql_create_table_users_sqlite3)
+print(create_table) """
+# END EXAMPLE 1
+
+# EXAMPLE 2 FOR MYSQL
+""" table_name = "users"
 sql_create_table_users_mysql =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)")
 create_table = db.create_table(sql_create_table_users_mysql)
-print(create_table)
+print(create_table) """
 # END EXAMPLE 2
 ########################         END CREATE TABLE EXAMPLES           #########################
 ##############################################################################################
@@ -443,6 +410,10 @@ print (query) """
 ##############################################################################################
 
 
+
+
+
+
 ##############################################################################################
 ########################         BEGIN INSERT EXAMPLES           #############################
 
@@ -468,6 +439,11 @@ print (query) """
 
 ########################         END INSERT EXAMPLES           ###############################
 ##############################################################################################
+
+
+
+
+
 
 ##############################################################################################
 ########################         BEGIN UPDATE EXAMPLES           #############################
@@ -496,6 +472,11 @@ print (query) """
 ########################         END UPDATE EXAMPLES           ###############################
 ##############################################################################################
 
+
+
+
+
+
 ##############################################################################################
 ########################         BEGIN DELETE EXAMPLES           #############################
 
@@ -523,7 +504,6 @@ print (query) """
 
 
 
-if tunnel:
-    tunnel.stop()
+""" tunnel.stop() # ONLY ENABLE THIS LINE IF SSH TUNNEL WAS CREATED """
 
 print("mod db ok")
