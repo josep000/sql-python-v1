@@ -7,6 +7,50 @@ domainDbPassword = "password"
 domainSshUserName = "username"
 domainSshPassword = "password"
 
+
+
+
+
+#BEGIN CONFIG SQLITE3*********************************************>
+
+from os import close
+import sqlite3
+from typing import Coroutine
+server_db_local_config_sqlite3_1 = {
+    "server_db_name" : 'crud1',
+    "server_db_system" : 'sqlite3',
+    }
+
+
+#END CONFIG SQLITE3*********************************************<
+
+
+
+#BEGIN CONFIG MYSQL*********************************************>
+import pymysql
+
+server_db_local_config_mysql_1 = {
+    "server_db_ip" : '127.0.0.1',
+    "server_db_port" : 3306, #3306 is defaul port value of mysql
+    "server_db_user" : 'jose',
+    "server_db_password" : '',
+    "server_db_name" : 'crud1',
+    "server_db_system" : 'mysql'
+    }
+
+# server_db_local_config_mysql_2 = {
+#     "server_db_ip" : '127.0.0.1',
+#     "server_db_port" : 3306, #3306 is defaul port value of mysql
+#     "server_db_user" : 'root',
+#     "server_db_password" : '',
+#     "server_db_name" : 'crud_python2',
+#     "server_db_system" : 'mysql'
+#     }
+
+
+##############################################################################################
+########################         BEGIN CONFIG MYSQL WITH SSH TUNNEL           ################
+
 #BEGIN TUNNEL SSH
 port_ssh_tunnel=0
 from sshtunnel import SSHTunnelForwarder
@@ -36,102 +80,23 @@ class tunnel_ssh():
 
 
 
-#BEGIN CONFIG SQLITE3*********************************************>
-
-from os import close
-import sqlite3
-from typing import Coroutine
-server_db_local_config_sqlite3_1 = {
-    "server_db_name" : 'crud1',
-    "server_db_system" : 'sqlite3',
-    }
-
-#sql_create_table_users_sqlite3 ='''CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)'''
-#sql_create_table_users_sqlite3 =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)")
-# sql_create_table_products_sqlite3 =("CREATE TABLE", "products", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, productname VARCHAR(30) NOT NULL, price FLOAT NOT NULL)")
-#sql_create_table_products_sqlite3 =("CREATE TABLE", "productos", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)")
-
-#END CONFIG SQLITE3*********************************************<
-
-
-
-#BEGIN CONFIG MYSQL*********************************************>
-import pymysql
-
-server_db_local_config_mysql_1 = {
+tunnel = tunnel_ssh() #Use this line if gona use tunnel ssh
+port_ssh_tunnel = tunnel.start() #Use this line if gona use tunnel ssh
+print ('Port ssh: ' , port_ssh_tunnel)
+server_db_remote_ssh_tunnel_config_mysql_1 = {
     "server_db_ip" : '127.0.0.1',
-    "server_db_port" : 3306, #3306 is defaul port value of mysql
-    "server_db_user" : 'jose',
-    "server_db_password" : '',
-    "server_db_name" : 'crud1',
-    "server_db_system" : 'mysql'
+    "server_db_port" : port_ssh_tunnel, #3306 is defaul port value of mysql local/ 5522 is port of namecheap / with tunnel ssh is server.local_bind_port
+    "server_db_user" : domainDbUserName,
+    "server_db_password" : domainDbPassword,
+    "server_db_name" : 'seguxjxs_crud_python_jpinto_1',
+    "server_db_system" : 'mysql',
     }
 
-# server_db_local_config_mysql_2 = {
-#     "server_db_ip" : '127.0.0.1',
-#     "server_db_port" : 3306, #3306 is defaul port value of mysql
-#     "server_db_user" : 'root',
-#     "server_db_password" : '',
-#     "server_db_name" : 'crud_python2',
-#     "server_db_system" : 'mysql'
-#     }
+
+########################         END CONFIG MYSQL WITH SSH TUNNEL           ##################
+##############################################################################################
 
 
-
-
-# tunnel = tunnel_ssh() #Use this line if gona use tunnel ssh
-# port_ssh_tunnel = tunnel.start() #Use this line if gona use tunnel ssh
-# print ('Port ssh: ' , port_ssh_tunnel)
-# server_db_remote_ssh_tunnel_config_mysql_1 = {
-#     "server_db_ip" : '127.0.0.1',
-#     "server_db_port" : port_ssh_tunnel, #3306 is defaul port value of mysql local/ 5522 is port of namecheap / with tunnel ssh is server.local_bind_port
-#     "server_db_user" : domainDbUserName,
-#     "server_db_password" : domainDbPassword,
-#     "server_db_name" : 'seguxjxs_crud_python_jpinto_1',
-#     "server_db_system" : 'mysql',
-#     }
-
-
-
-
-# sql sentence to create a table
-sql_create_table_users_mysql =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)")
-
-#END CONFIG MYSQL*********************************************<
-
-
-
-
-#BEGIN ALIAS FOR TABLE NAME**************************************************************************>
-tabla_usuarios_mysql = "users"
-
-#END ALIAS FOR TABLE NAME****************************************************************************<
-
-#example 1 dict format for data in sql sentence
-
-# datos_usuario = {
-#     "username" : "'jose'",
-#     "country" : "'venezuela",
-#     "phone" : "'04143062185'",
-#     "age" : "'44'"
-# }
-
-#example 2 dict format for data in sql sentence
-#productos_table_name="product_pub"
-# datos_productos ={
-#     "product_name" : "'pelota playa'",
-#     "product_price" : "'50'",
-#     "product_description" : "'pelota de playa de colores'"  
-# }
-#example dict sql_statement for search all record
-# sql_statement = {
-#     "1":"1"
-# }
-#example dict sql_statement for search with 2 field with AND (id = 9 AND active = 2)
-# sql_statement = {
-#     "id":"9",
-#     "active":"1"
-# }
 
 class database():
     def __init__(self,server_db_config):
@@ -261,7 +226,7 @@ class database():
             self.close_db()
 
     #BEGIN SELECT*************************************************
-    def select_from_table(self,table_name, sql_statement):
+    def select(self,table_name,sql_statement):
         try:
             table_name=str(table_name)
             if ((type(sql_statement)==dict) and (sql_statement!="") and (table_name!="")):
@@ -270,8 +235,7 @@ class database():
                 sql = sql_statement
             else:
                 return ("error","1 or more args are missing or incomplete", self.__server_db_system,self.__server_db_name)
-            connect = self.connect_db()
-            if connect:
+            if self.connect_db():
                 try:
                     self.__cur.execute(sql)
                 except BaseException as err:
@@ -283,20 +247,19 @@ class database():
                 else:
                     return result
             else:
+                self.close_db()
                 return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
         except BaseException as err:
             return("Something went wrong",self.__server_db_system,self.__server_db_name, err)
-        finally:
-            self.close_db()
     #END SELECT*****************************************************************
 
     #BEGIN INSERT*************************************************
-    def insert_row_table(self,table_name,table_data,sql_statement):
+    def insert(self,table_name,values):
         table_name=str(table_name)
-        if table_data and type(table_data)==dict and table_name!="" and type(table_name)==str and sql_statement==False:
-            sql = "INSERT INTO " + table_name + " (" + ",".join(list(table_data.keys())) + ") VALUES (" + ",".join(list(table_data.values())) + ")"
-        elif table_data == False and table_name!="" and type(table_name)==str and sql_statement and type(sql_statement)==str and sql_statement!="":
-            sql = sql_statement
+        if values and type(values)==dict and table_name!="" and type(table_name)==str and table_name:
+            sql = "INSERT INTO " + table_name + " (" + ",".join(list(values.keys())) + ") VALUES (" + ",".join(list(values.values())) + ")"
+        elif table_name and type(table_name)==str and table_name!="" and type(values)==str and values and values!="":
+            sql = values
         else:
             return ("error","1 or more args are missing or incomplete",self.__server_db_system,self.__server_db_name)
             
@@ -315,12 +278,11 @@ class database():
                 self.close_db()
                 return (verify_table_ex[1])
         else:
-            return ("error", "Error conecting to database",self.__server_db_system,self.__server_db_name)
-            
+            return ("error", "Error conecting to database",self.__server_db_system,self.__server_db_name)     
     #END INSERT*****************************************************************
 
     #BEGIN UPDATE*************************************************
-    def update_from_table(self,sql_statement,table_name,table_data=False):
+    def update(self,table_name,sql_statement,table_data=False):
         #arg active = values that are partially errased from system and is optional, values 0 or 1)
         table_name=str(table_name)
         if((type(sql_statement)==str) and (sql_statement!="") and (table_name!="") and (type(table_name)==str) and type(table_data)==dict and table_data):
@@ -348,7 +310,7 @@ class database():
     #END UPDATE*****************************************************************
 
     #BEGIN DELETE*************************************************
-    def delete_from_table(self, sql_statement,table_name, genericSql=False):
+    def delete(self,table_name,sql_statement,genericSql=False):
         table_name=str(table_name)
         if ((type(sql_statement)==str) and (sql_statement!="") and ((type(table_name)==str)) and (table_name!="") and genericSql==1):
             sql = sql_statement
@@ -388,137 +350,120 @@ class database():
 
 #BEGIN SQLITE3 +++++++++++++++++++++++++++++++++++++++++++++++
 
-# db_1 = database(server_db_local_config_sqlite3_1) # local database conection
+# db = database(server_db_local_config_sqlite3_1) # local database conection
 
 
-db_2 = database(server_db_local_config_mysql_1) # local database conection
+db = database(server_db_local_config_mysql_1) # local database conection
 
 
-# db_3 = database(server_db_remote_ssh_tunnel_config_mysql_1) # remote dababase conection
+# db = database(server_db_remote_ssh_tunnel_config_mysql_1) # remote dababase conection
 
 
 
 #*******************************************************
 # Create Database
-# createdb1 = db_1.create_db()
+# createdb1 = db.create_db()
 # print(createdb1)
 
-# createdb2 = db_2.create_db()
+# createdb2 = db.create_db()
 # print(createdb2)
 
 
 #*******************************************************
 
-#Crear tablas
-# create_table = db_1.create_table(sql_create_table_users_sqlite3)
+##############################################################################################
+########################         BEGIN CREATE TABLE EXAMPLES           #######################
+createdb = db.create_db()
+print(createdb)
+########################         END CREATE TABLE EXAMPLES           #########################
+##############################################################################################
 
-# create_table = db_2.create_table(sql_create_table_users_mysql)
 
-# create_table = db_3.create_table(sql_create_table_users_mysql)
+##############################################################################################
+########################         BEGIN CREATE TABLE EXAMPLES           #######################
+# EXAMPLE 1: FOR sqlinte
+table_name = "users"
+sql_create_table_users_sqlite3 ='''CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)'''
+create_table = db.create_table(sql_create_table_users_sqlite3)
+print(create_table)
+# END EXAMPLE 1
+
+# EXAMPLE 2
+table_name = "users"
+sql_create_table_users_mysql =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)")
+create_table = db.create_table(sql_create_table_users_mysql)
+print(create_table)
+# END EXAMPLE 2
+########################         END CREATE TABLE EXAMPLES           #########################
+##############################################################################################
 
 
-# print(create_table)
 
-#*******************************************************
-#Parametros para insertar registros
-table_name = "users" #Nombre de la tabla
 
-#Dict que contiene los datos que serán registrados en la tabla. "Nombre de campo" : "Valor" / "field name" : "value"
-table_data = {
-    "username" : "'huse'",
-    "country" : "'Uruguay'",
-    "phone" : "'774433347'",
-    "age" : "'30'"
+
+
+##############################################################################################
+########################         BEGIN SELECT EXAMPLES           #############################
+# EXAMPLE 1:
+""" table_name = "users" # This is the table that will be affected
+sql_statement = {
+    "id" : "20",
 }
+query = db.select(table_name,sql_statement)
+print (query) """
+# END EXAMPLE 1
 
-# query_insert = db_1.insert_row_table(tabla_usuarios,datos_usuario)
-# print(query_insert_1)
+# EXAMPLE 2:
+""" table_name = "users" # This is the table that will be affected
+sql_statement = {
+    "1":"1"
+}
+query = db.select(table_name,sql_statement)
+print (query) """
+# END EXAMPLE 2
 
-# query_insert = db_2.insert_row_table(tabla_usuarios,datos_usuario)
-# print(query_insert)
+# EXAMPLE 3:
+""" table_name = "users" # This is the table that will be affected
+sql_statement = {
+    "id":"9",
+    "active":"1"
+}
+query = db.select(table_name,sql_statement)
+print (query) """
+# END EXAMPLE 3
 
-# for i in range(10):
-#     query_insert_1 = db_2.insert_row_table(tabla_usuarios,datos_usuario)
-#     print(query_insert_1)
+# EXAMPLE 4
+""" table_name = "users" # This is the table that will be affected
+sql_statement = "SELECT * FROM users WHERE id BETWEEN 5 AND 10"
+query = db.select(table_name,sql_statement)
+print (query) """
+# END EXAMPLE 4
 
-#*******************************************************
-
-#ejemplos de parametros de querys simples: afecta SELECT, UPDATE, DELETE.
-
-# sql_statement = {
-#     "id" : "1",
-# }
-
-#sql_statement = "SELECT * FROM users WHERE id BETWEEN 5 AND 10"
-
-# sql_statement = {}
-
-# sql_statement = {
-#     "id" : "3",
-# }
-
-
-
-# sql_statement = {
-#     "id" : "1",
-#     "active" : "1"
-# }
-
-# sql_statement = {
-#     "active":"1"
-# }
-
-# sql_statement = {
-#      "1":"1"
-# }
-
-
-
-# table_data = {
-#     "username" : "'y44epeto'",
-# }
-# sql_statement = "id = 3"
-
-#query_select_1 = db_1.select_from_table(tabla_usuarios,sql_statement)
-#print(query_select_1)
-
-# query_select= db_2.select_from_table(tabla_usuarios,sql_statement)
-# print(query_select)
-
-# query_delete = db_2.delete_from_table(tabla_usuarios,sql_statement)
-# print(query_delete)
-
-
-
-
-#END SQLITE3--------------------------------------------------
-
-# tunnel.stop()
+########################         END SELECT EXAMPLES           ###############################
+##############################################################################################
 
 
 ##############################################################################################
 ########################         BEGIN INSERT EXAMPLES           #############################
 
 # EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
-table_name = "users" # This is the table that will be affected
+""" table_name = "users" # This is the table that will be affected
 table_data = { # This is a dict represent { columns : value } to be inserted 
     "username" : "'333'",
     "country" : "'Uruguay'",
     "phone" : "'774433347'",
     "age" : "'30'"
 }
-query = db_2.insert_row_table(table_name,table_data,False)
-print (query)
+query = db.insert(table_name,table_data)
+print (query) """
 # END EXAMPLE 1
 
 
 # EXAMPLE 2: sql_statement must be the complete sql sentence with all columns and values
-
-""" table_name = "users" # This is the table that will be affected
+""" table_name = "users"
 sql_statement = "INSERT INTO users (username,country,phone,age) value ('Jose','Uruguay','099333111','30')"
-query = db_2.insert_row_table(table_name,False,sql_statement)
+query = db.insert(table_name,sql_statement)
 print (query) """
-
 # END EXAMPLE 2
 
 ########################         END INSERT EXAMPLES           ###############################
@@ -528,7 +473,7 @@ print (query) """
 ########################         BEGIN UPDATE EXAMPLES           #############################
 
 # EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
-"""table_name = "users" # This is the table that will be affected
+""" table_name = "users"
 sql_statement = "id = 3 or id = 2" # this var will be the condition as is written
 table_data = { # This is a dict represent { columns : value } to be updated 
     "username" : "'333'",
@@ -536,16 +481,16 @@ table_data = { # This is a dict represent { columns : value } to be updated
     "phone" : "'774433347'",
     "age" : "'30'"
 }
-query = db_2.update_from_table(sql_statement,table_name,table_data)
-print (query)"""
+query = db.update(table_name,sql_statement,table_data)
+print (query) """
 
 # END EXAMPLE 1
 
 # EXAMPLE 2: sql_statement must be the complete sql sentence with all columns and values
-"""table_name = "users" # This is the table that will be affected
-sql_statement = "UPDATE users SET username = 'Jossse', country = 'Uruguay' WHERE id = 3"
-query = db_2.update_from_table(sql_statement,table_name)
-print (query)"""
+""" table_name = "users"
+sql_statement = "UPDATE users SET username = 'Jossse', country = 'Uruguay' WHERE id = 25"
+query = db.update(table_name,sql_statement)
+print (query) """
 # END EXAMPLE 2
 
 ########################         END UPDATE EXAMPLES           ###############################
@@ -555,16 +500,16 @@ print (query)"""
 ########################         BEGIN DELETE EXAMPLES           #############################
 
 # EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
-""" table_name = "users" # This is the table that will be affected
-sql_statement = "id = 3" # this var will be the condition as is written
-query = db_2.delete_from_table(sql_statement,table_name)
+""" table_name = "users"
+sql_statement = "id = 10" # this var will be the condition as is written
+query = db.delete(table_name,sql_statement)
 print (query) """
 # END EXAMPLE 1
 
 # EXAMPLE 2: sql_statement must be the complete sql sentence with a third parameter with number 1 on calling function
-""" table_name = "users" # This is the table that will be affected
-sql_statement = "DELETE FROM users WHERE id = 2"
-query = db_2.delete_from_table(sql_statement,table_name,1) Adding a number 1 on last parameter is for allowing the function to read sql_statement
+""" table_name = "users"
+sql_statement = "DELETE FROM users WHERE id = 12"
+query = db.delete(table_name, sql_statement,1) # Adding a number 1 on last parameter is for allowing the function to read sql_statement
 print (query) """
 # END EXAMPLE 2
 
@@ -578,7 +523,7 @@ print (query) """
 
 
 
-
-
+if tunnel:
+    tunnel.stop()
 
 print("mod db ok")
