@@ -36,8 +36,8 @@ server_db_local_config_sqlite3_1 = {
     }
 
 #sql_create_table_users_sqlite3 ='''CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)'''
-#sql_create_table_users_sqlite3 =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)")
-sql_create_table_products_sqlite3 =("CREATE TABLE", "products", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, productname VARCHAR(30) NOT NULL, price FLOAT NOT NULL)")
+sql_create_table_users_sqlite3 =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)")
+# sql_create_table_products_sqlite3 =("CREATE TABLE", "products", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, productname VARCHAR(30) NOT NULL, price FLOAT NOT NULL)")
 #sql_create_table_products_sqlite3 =("CREATE TABLE", "productos", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)")
 #END CONFIG SQLITE3*********************************************<
 
@@ -394,7 +394,7 @@ class database():
 
 #BEGIN SQLITE3 +++++++++++++++++++++++++++++++++++++++++++++++
 
-#db_1 = database(server_db_local_config_sqlite3_1)
+db_1 = database(server_db_local_config_sqlite3_1)
 #db_1 = database(server_db_local_config_mysql_1)
 
 
@@ -407,17 +407,17 @@ class database():
 
 #*******************************************************
 # Crear base de datos
-# createdb1 = db_2.create_db()
+# createdb1 = db_1.create_db()
 # print(createdb1)
 
 #*******************************************************
 
 #Crear tablas
-#create_table = db_1.create_table(sql_create_table_users_sqlite3)
+create_table = db_1.create_table(sql_create_table_users_sqlite3)
 # create_table = db_1.create_table(sql_create_table_users_mysql)
 #create_table = db_2.create_table(sql_create_table_users_mysql)
 # create_table = db_2.create_table(sql_create_table_users_mysql)
-# print(create_table)
+print(create_table)
 
 #*******************************************************
 #Parametros para insertar registros
