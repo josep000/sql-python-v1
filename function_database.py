@@ -13,7 +13,7 @@ class database():
         self.__miConexion = ''
         self.__cur = ''
         self.status_conn = False
-    
+
     def connect_db(self, create_db_value = 0):
         if (self.__server_db_system == "sqlite3"):
             try:           
@@ -54,7 +54,7 @@ class database():
             self.__miConexion.close()
         except BaseException as err:
             print ("Except closing DB. Detail: " , err)
-            
+
     def verify_table_exist(self,table_name):
         
         if self.__server_db_system == 'mysql':
@@ -241,8 +241,7 @@ class database():
             return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
     #END DELETE*****************************************************************
 
-    
-    
+
 
 
 
@@ -252,7 +251,7 @@ class database():
 ########################         BEGIN CONFIG DB OBJECT         ##############################
 
 # EXAMPLE 1: FOR SQLITE3
-""" from os import close
+from os import close
 import sqlite3
 from typing import Coroutine
 
@@ -261,7 +260,7 @@ server_db_local_config_sqlite3 = {
     "server_db_system" : 'sqlite3',
     }
 
-db = database(server_db_local_config_sqlite3) # local database conection """
+db = database(server_db_local_config_sqlite3) # local database conection
 # END EXAMPLE 1
 
 # EXAMPLE 2: FOR MYSQL
@@ -272,7 +271,7 @@ server_db_local_config_mysql = {
     "server_db_port" : 3306, #3306 is defaul port value of mysql
     "server_db_user" : 'jose',
     "server_db_password" : '',
-    "server_db_name" : 'crud12',
+    "server_db_name" : 'crud1',
     "server_db_system" : 'mysql'
     }
 
@@ -328,11 +327,10 @@ db = database(server_db_remote_ssh_tunnel_config_mysql) # remote dababase conect
 ########################         END CONFIG DB OBJECT         ################################
 ##############################################################################################
 
-    
-    
-    
-    
-    
+
+
+
+
 
 ##############################################################################################
 ########################         BEGIN CREATE DATABASE EXAMPLES           ####################
@@ -349,10 +347,11 @@ print(createdb) """
 ##############################################################################################
 ########################         BEGIN CREATE TABLE EXAMPLES           #######################
 # EXAMPLE 1: FOR sqlite3
-""" table_name = "users"
-sql_create_table_users_sqlite3 ='''CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)'''
+table_name = "users"
+sql_create_table_users_sqlite3 = 'CREATE TABLE "users" ("id" INTEGER NOT NULL,"active" INTEGER NOT NULL, "username" TEXT NOT NULL, "age" INTEGER NOT NULL, "country" TEXT NOT NULL, "phone" TEXT NOT NULL, PRIMARY KEY("id" AUTOINCREMENT))'
+
 create_table = db.create_table(sql_create_table_users_sqlite3)
-print(create_table) """
+print(create_table)
 # END EXAMPLE 1
 
 # EXAMPLE 2 FOR MYSQL
@@ -392,7 +391,7 @@ print (query) """
 # EXAMPLE 3:
 """ table_name = "users" # This is the table that will be affected
 sql_statement = {
-    "id":"9",
+    "id":"8",
     "active":"1"
 }
 query = db.select(table_name,sql_statement)
@@ -450,7 +449,7 @@ print (query) """
 
 # EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
 """ table_name = "users"
-sql_statement = "id = 3 or id = 2" # this var will be the condition as is written
+sql_statement = "id = 3 or id = 32" # this var will be the condition as is written
 table_data = { # This is a dict represent { columns : value } to be updated 
     "username" : "'333'",
     "country" : "'Uruguay'",
@@ -459,12 +458,11 @@ table_data = { # This is a dict represent { columns : value } to be updated
 }
 query = db.update(table_name,sql_statement,table_data)
 print (query) """
-
 # END EXAMPLE 1
 
 # EXAMPLE 2: sql_statement must be the complete sql sentence with all columns and values
 """ table_name = "users"
-sql_statement = "UPDATE users SET username = 'Jossse', country = 'Uruguay' WHERE id = 25"
+sql_statement = "UPDATE users SET username = 'Jossse', country = 'Uruguay' WHERE id = 35"
 query = db.update(table_name,sql_statement)
 print (query) """
 # END EXAMPLE 2
@@ -482,14 +480,14 @@ print (query) """
 
 # EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
 """ table_name = "users"
-sql_statement = "id = 10" # this var will be the condition as is written
+sql_statement = "id = 30" # this var will be the condition as is written
 query = db.delete(table_name,sql_statement)
 print (query) """
 # END EXAMPLE 1
 
 # EXAMPLE 2: sql_statement must be the complete sql sentence with a third parameter with number 1 on calling function
 """ table_name = "users"
-sql_statement = "DELETE FROM users WHERE id = 12"
+sql_statement = "DELETE FROM users WHERE id = 29"
 query = db.delete(table_name, sql_statement,1) # Adding a number 1 on last parameter is for allowing the function to read sql_statement
 print (query) """
 # END EXAMPLE 2
