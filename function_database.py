@@ -114,9 +114,7 @@ class database():
                     return ("Error creating table '" + table_name + "'. Alread exist." , connect[1],self.__server_db_system)
                 else:
                     try:
-                        
-                        sql=' '.join(sql_create_table)
-                        self.__cur.execute(sql)                    
+                        self.__cur.execute(sql_create_table)                    
                         return("Table '" + table_name + "' created succesfully. in '" + self.__server_db_name + "' " + self.__server_db_system)
                     except BaseException as err:
                         return ("Error creating table '" + table_name + "' ", sql_create_table, self.__server_db_system,self.__server_db_name, err)
@@ -347,16 +345,13 @@ print(createdb) """
 ##############################################################################################
 ########################         BEGIN CREATE TABLE EXAMPLES           #######################
 # EXAMPLE 1: FOR sqlite3
-table_name = "users"
-sql_create_table_users_sqlite3 = 'CREATE TABLE "users" ("id" INTEGER NOT NULL,"active" INTEGER NOT NULL, "username" TEXT NOT NULL, "age" INTEGER NOT NULL, "country" TEXT NOT NULL, "phone" TEXT NOT NULL, PRIMARY KEY("id" AUTOINCREMENT))'
-
+""" sql_create_table_users_sqlite3 ="CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)"
 create_table = db.create_table(sql_create_table_users_sqlite3)
-print(create_table)
+print(create_table) """
 # END EXAMPLE 1
 
 # EXAMPLE 2 FOR MYSQL
-""" table_name = "users"
-sql_create_table_users_mysql =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)")
+""" sql_create_table_users_mysql ="CREATE TABLE users99 (id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)"
 create_table = db.create_table(sql_create_table_users_mysql)
 print(create_table) """
 # END EXAMPLE 2
@@ -373,7 +368,7 @@ print(create_table) """
 # EXAMPLE 1:
 """ table_name = "users" # This is the table that will be affected
 sql_statement = {
-    "id" : "20",
+    "id" : "47",
 }
 query = db.select(table_name,sql_statement)
 print (query) """
@@ -391,7 +386,7 @@ print (query) """
 # EXAMPLE 3:
 """ table_name = "users" # This is the table that will be affected
 sql_statement = {
-    "id":"8",
+    "id":"45",
     "active":"1"
 }
 query = db.select(table_name,sql_statement)
@@ -400,7 +395,7 @@ print (query) """
 
 # EXAMPLE 4
 """ table_name = "users" # This is the table that will be affected
-sql_statement = "SELECT * FROM users WHERE id BETWEEN 5 AND 10"
+sql_statement = "SELECT * FROM users WHERE id BETWEEN 5 AND 42"
 query = db.select(table_name,sql_statement)
 print (query) """
 # END EXAMPLE 4
@@ -431,7 +426,7 @@ print (query) """
 
 # EXAMPLE 2: sql_statement must be the complete sql sentence with all columns and values
 """ table_name = "users"
-sql_statement = "INSERT INTO users (username,country,phone,age) value ('Jose','Uruguay','099333111','30')"
+sql_statement = "INSERT INTO users (username,country,phone,age) VALUES ('Jose','Uruguay','099333111','30')"
 query = db.insert(table_name,sql_statement)
 print (query) """
 # END EXAMPLE 2
@@ -449,12 +444,12 @@ print (query) """
 
 # EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
 """ table_name = "users"
-sql_statement = "id = 3 or id = 32" # this var will be the condition as is written
+sql_statement = "id = 3 or id = 38" # this var will be the condition as is written
 table_data = { # This is a dict represent { columns : value } to be updated 
-    "username" : "'333'",
-    "country" : "'Uruguay'",
-    "phone" : "'774433347'",
-    "age" : "'30'"
+    "username" : "'9997'",
+    "country" : "'Venezuela'",
+    "phone" : "'9992221'",
+    "age" : "'43'"
 }
 query = db.update(table_name,sql_statement,table_data)
 print (query) """
@@ -462,7 +457,7 @@ print (query) """
 
 # EXAMPLE 2: sql_statement must be the complete sql sentence with all columns and values
 """ table_name = "users"
-sql_statement = "UPDATE users SET username = 'Jossse', country = 'Uruguay' WHERE id = 35"
+sql_statement = "UPDATE users SET username = 'Jossse', country = 'Uruguay' WHERE id = 2"
 query = db.update(table_name,sql_statement)
 print (query) """
 # END EXAMPLE 2
@@ -480,14 +475,14 @@ print (query) """
 
 # EXAMPLE 1: sql_statement will be readed as the condition of how many records will be updated
 """ table_name = "users"
-sql_statement = "id = 30" # this var will be the condition as is written
+sql_statement = "id = 1" # this var will be the condition as is written
 query = db.delete(table_name,sql_statement)
 print (query) """
 # END EXAMPLE 1
 
 # EXAMPLE 2: sql_statement must be the complete sql sentence with a third parameter with number 1 on calling function
 """ table_name = "users"
-sql_statement = "DELETE FROM users WHERE id = 29"
+sql_statement = "DELETE FROM users WHERE id = 2"
 query = db.delete(table_name, sql_statement,1) # Adding a number 1 on last parameter is for allowing the function to read sql_statement
 print (query) """
 # END EXAMPLE 2
