@@ -1,119 +1,3 @@
-<<<<<<< HEAD
-#FIRST STABLE AND TESTED VERSION. LAST DATE MODIFIED 30 07 2021. JOSE PINTO
-port_ssh_tunnel=0
-
-#BEGIN TUNNEL SSH
-from sshtunnel import SSHTunnelForwarder
-class tunnel_ssh():
-    def __init__(self):
-        self.__server = SSHTunnelForwarder(
-        ('162.0.209.168',21098),
-        ssh_username="seguxjxs",
-        ssh_password="seguprovieferper2021",
-        remote_bind_address=('127.0.0.1', 3306)
-        ) 
-    def start(self):
-        try:
-            self.__server.start()
-            return (self.__server.local_bind_port)  # show assigned local port
-        except:
-            print ("Error starting tunnel ssh")
-
-    def stop(self):
-        try:
-            #work with `SECRET SERVICE` through `server.local_bind_port`.
-            self.__server.stop()
-        except:
-            print("Error stoping tunnel ssh")
-#ENF TUNNEL SSH
-#BEGIN CONFIG SQLITE3*********************************************>
-
-from os import close
-import sqlite3
-from typing import Coroutine
-server_db_local_config_sqlite3_1 = {
-    "server_db_name" : 'crud1',
-    "server_db_system" : 'sqlite3',
-    }
-
-#sql_create_table_users_sqlite3 ='''CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)'''
-sql_create_table_users_sqlite3 =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)")
-# sql_create_table_products_sqlite3 =("CREATE TABLE", "products", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, productname VARCHAR(30) NOT NULL, price FLOAT NOT NULL)")
-#sql_create_table_products_sqlite3 =("CREATE TABLE", "productos", "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30) NOT NULL)")
-#END CONFIG SQLITE3*********************************************<
-
-
-#BEGIN CONFIG MYSQL*********************************************>
-import pymysql
-
-server_db_local_config_mysql_1 = {
-    "server_db_ip" : '127.0.0.1',
-    "server_db_port" : 3306, #3306 is defaul port value of mysql
-    "server_db_user" : 'root',
-    "server_db_password" : '',
-    "server_db_name" : 'crud1',
-    "server_db_system" : 'mysql'
-    }
-server_db_local_config_mysql_2 = {
-    "server_db_ip" : '127.0.0.1',
-    "server_db_port" : 3306, #3306 is defaul port value of mysql
-    "server_db_user" : 'root',
-    "server_db_password" : '',
-    "server_db_name" : 'crud_python2',
-    "server_db_system" : 'mysql'
-    }
-
-# tunnel = tunnel_ssh()
-# port_ssh_tunnel = tunnel.start()
-server_db_remote_ssh_tunnel_config_mysql_1 = {
-    "server_db_ip" : '127.0.0.1',
-    "server_db_port" : port_ssh_tunnel, #3306 is defaul port value of mysql local/ 5522 is port of namecheap / with tunnel ssh is server.local_bind_port
-    "server_db_user" : 'seguxjxs',
-    "server_db_password" : 'seguprovieferper2021',
-    "server_db_name" : 'seguxjxs_crud_python_jpinto_1',
-    "server_db_system" : 'mysql',
-    }
-    
-
-sql_create_table_users_mysql =("CREATE TABLE", "users", "(id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)")
-
-#END CONFIG MYSQL*********************************************<
-
-
-
-
-#BEGIN ALIAS FOR TABLE NAME**************************************************************************>
-tabla_usuarios_mysql = "users"
-
-#END ALIAS FOR TABLE NAME****************************************************************************<
-
-#example 1 dict format for data in sql sentence
-
-# datos_usuario = {
-#     "username" : "'jose'",
-#     "country" : "'venezuela_again'",
-#     "phone" : "'04143062185'",
-#     "age" : "'44'"
-# }
-
-#example 2 dict format for data in sql sentence
-#productos_table_name="product_pub"
-# datos_productos ={
-#     "product_name" : "'pelota playa'",
-#     "product_price" : "'50'",
-#     "product_description" : "'pelota de playa de colores'"  
-# }
-#example dict sql_statement for search all record
-# sql_statement = {
-#     "1":"1"
-# }
-#example dict sql_statement for search with 2 field with AND (id = 9 AND active = 2)
-# sql_statement = {
-#     "id":"9",
-#     "active":"1"
-# }
-=======
->>>>>>> correcciones-sentencias
 
 class database():
     def __init__(self,server_db_config):
@@ -325,12 +209,6 @@ class database():
             return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
     #END UPDATE*****************************************************************
 
-<<<<<<< HEAD
-#BEGIN SQLITE3 +++++++++++++++++++++++++++++++++++++++++++++++
-
-db_1 = database(server_db_local_config_sqlite3_1)
-#db_1 = database(server_db_local_config_mysql_1)
-=======
     #BEGIN DELETE*************************************************
     def delete(self,table_name,sql_statement,genericSql=False):
         table_name=str(table_name)
@@ -360,44 +238,24 @@ db_1 = database(server_db_local_config_sqlite3_1)
         else:
             return ("error", "Error conecting to database", self.__server_db_system,self.__server_db_name)
     #END DELETE*****************************************************************
->>>>>>> correcciones-sentencias
 
 
 
-
-
-
-<<<<<<< HEAD
-#*******************************************************
-# Crear base de datos
-# createdb1 = db_1.create_db()
-# print(createdb1)
-=======
->>>>>>> correcciones-sentencias
 
 ##############################################################################################
 ########################         BEGIN CONFIG DB OBJECT         ##############################
 
-<<<<<<< HEAD
-#Crear tablas
-create_table = db_1.create_table(sql_create_table_users_sqlite3)
-# create_table = db_1.create_table(sql_create_table_users_mysql)
-#create_table = db_2.create_table(sql_create_table_users_mysql)
-# create_table = db_2.create_table(sql_create_table_users_mysql)
-print(create_table)
-=======
 # EXAMPLE 1: FOR SQLITE3
-from os import close
+""" from os import close
 import sqlite3
 from typing import Coroutine
->>>>>>> correcciones-sentencias
 
 server_db_local_config_sqlite3 = {
     "server_db_name" : 'crud1',
     "server_db_system" : 'sqlite3',
     }
 
-db = database(server_db_local_config_sqlite3) # local database conection
+db = database(server_db_local_config_sqlite3) # local database conection """
 # END EXAMPLE 1
 
 # EXAMPLE 2: FOR MYSQL
@@ -490,7 +348,7 @@ print(create_table) """
 # END EXAMPLE 1
 
 # EXAMPLE 2 FOR MYSQL
-""" sql_create_table_users_mysql ="CREATE TABLE users99 (id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)"
+""" sql_create_table_users_mysql ="CREATE TABLE users (id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, active INTEGER DEFAULT 1 NOT NULL, username VARCHAR(30) NOT NULL, age INTEGER NOT NULL, country VARCHAR(30) NOT NULL, phone VARCHAR(30)  NOT NULL)"
 create_table = db.create_table(sql_create_table_users_mysql)
 print(create_table) """
 # END EXAMPLE 2
